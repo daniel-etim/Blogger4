@@ -29,3 +29,13 @@ class RegisterUserSerializer(serializers.ModelSerializer):
             email=validated_data["email"],
             password=validated_data["password"],
         )
+    
+
+class LoginUserSerializer(serializers.Serializer):
+    """Serializer for user login.
+    - email
+    - password
+    """
+    
+    email = serializers.EmailField()
+    password = serializers.CharField(required=True, write_only=True, max_length=128,  min_length=8)

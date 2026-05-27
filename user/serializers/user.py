@@ -1,3 +1,4 @@
+from django.views.decorators.http import require_GET
 from rest_framework import serializers
 
 from user.models.user import User
@@ -39,3 +40,9 @@ class LoginUserSerializer(serializers.Serializer):
     
     email = serializers.EmailField()
     password = serializers.CharField(required=True, write_only=True, max_length=128,  min_length=8)
+
+
+class LogoutUserSerializer(serializers.Serializer):
+    """Serializer for user Logout.
+    - refresh_token"""
+    refresh_token = serializers.CharField(required=True)

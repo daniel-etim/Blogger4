@@ -72,12 +72,12 @@ class PostUpdateSerializer(serializers.ModelSerializer):
         slug = validated_data.get("slug")
 
         if slug:
-            print("Got slug from validated_data")
+            # print("Got slug from validated_data")
             base_slug = slug
             counter = 1
 
             while Post.objects.filter(slug=slug).exclude(slug=instance.slug).exists():
-                print("HERE")
+                # print("HERE")
                 slug = f"{base_slug}-{counter}"
                 counter += 1
 
@@ -86,5 +86,5 @@ class PostUpdateSerializer(serializers.ModelSerializer):
             return super().update(instance, validated_data)
         
         else:
-            print("HERE in else")
+            # print("HERE in else")
             return super().update(instance, validated_data)

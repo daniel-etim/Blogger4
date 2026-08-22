@@ -8,6 +8,7 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 
 from blog.serializers.blog import PostListSerializer, PostCreateSerializer, PostUpdateSerializer
 from blog.models.blog import Post
+from blogger.permissions import check_post_owner
 
 
 @api_view(["GET"])
@@ -78,3 +79,19 @@ def post_update(request: Request, pk: int):
     serializer.save()
      
     return Response(data={"message": "Successfully updated", "post": serializer.data}, status=status.HTTP_200_OK)
+
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def post_delete(request: Request, pk: int):
+    """Authenticate the author and delete post"""
+
+    try:
+        post = Post.objects.get(pk=pk)
+    except Post.DoesNotExist:
+        return Response(data={"error":"Post Not Found"}, status=status.HTTP_404_NOT_FOUND)
+    
+    if not check_post_owner(post, request.user):
+        return Response(data={"message": "you are not allowed to do this"}, status=status.HTTP_401_UNAUTHORIZED)
+    else:
+        post.delete()
+        return Response(data={"message": "deleted successfully"}, status=status.HTTP_200_OK)

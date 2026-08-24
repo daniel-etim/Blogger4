@@ -5,7 +5,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 
 from blog.models.blog import Post
-from user.models.user import User
 from comment.serializers.comment import CommentCreateSerializer
 
 

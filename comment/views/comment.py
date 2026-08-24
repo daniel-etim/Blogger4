@@ -4,7 +4,32 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 
+from blog.models.blog import Post
+from user.models.user import User
+from comment.serializers.comment import CommentCreateSerializer
+
+
 @api_view(["POST"])
-def create_comment(request: Request):
-    """success message"""
-    return Response(data={"message": "successful"}, status=status.HTTP_200_OK)
+@permission_classes([IsAuthenticated])
+def create_comment(request: Request, pk: int):
+    """..."""
+
+    try:
+        post = Post.objects.get(pk=pk)
+    except Post.DoesNotExist:
+        return Response(data={"error": "Post Not Found"}, status = status.HTTP_404_NOT_FOUND)
+
+    serializer = CommentCreateSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+
+    serializer = serializer.save(author=request.user, post=post)
+
+    serializer_data = {
+        "post": str(serializer.post),
+        "comment": serializer.body,
+        "created_at": serializer.created_at,
+        "author": str(serializer.author),
+        "id": serializer.id
+    }
+
+    return Response(data=serializer_data, status=status.HTTP_201_CREATED)

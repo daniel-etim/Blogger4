@@ -11,6 +11,8 @@ from blog.models.blog import Post
 from blogger.permissions import check_post_owner
 
 
+PND = "Post Not Found"
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticatedOrReadOnly])
 def post_list(request: Request):
@@ -55,7 +57,7 @@ def post_read(request: Request, pk: int):
     try:
         post = Post.objects.get(pk=pk)
     except Post.DoesNotExist:
-        return Response(data={"error": "Post Not Found"}, status=status.HTTP_404_NOT_FOUND)
+        return Response(data={"error": PND}, status=status.HTTP_404_NOT_FOUND)
 
     serializer = PostReadSerializer(post)
 
@@ -80,7 +82,7 @@ def post_update(request: Request, pk: int):
     try:
         post = Post.objects.get(pk=pk)
     except Post.DoesNotExist:
-        return Response(data={"error": "Post not found"}, status=status.HTTP_404_NOT_FOUND)
+        return Response(data={"error": PND}, status=status.HTTP_404_NOT_FOUND)
     
     if post.author != request.user:
         return Response(data={"error": "You're not authorized to edit this post."}, status=status.HTTP_401_UNAUTHORIZED)
@@ -100,7 +102,7 @@ def post_delete(request: Request, pk: int):
     try:
         post = Post.objects.get(pk=pk)
     except Post.DoesNotExist:
-        return Response(data={"error":"Post Not Found"}, status=status.HTTP_404_NOT_FOUND)
+        return Response(data={"error": PND}, status=status.HTTP_404_NOT_FOUND)
     
     if not check_post_owner(post, request.user):
         return Response(data={"message": "you are not allowed to do this"}, status=status.HTTP_401_UNAUTHORIZED)

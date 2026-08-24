@@ -9,6 +9,8 @@ from user.models.user import User
 from comment.serializers.comment import CommentCreateSerializer
 
 
+PND = "Post Not Found"
+
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def create_comment(request: Request, pk: int):
@@ -17,7 +19,7 @@ def create_comment(request: Request, pk: int):
     try:
         post = Post.objects.get(pk=pk)
     except Post.DoesNotExist:
-        return Response(data={"error": "Post Not Found"}, status = status.HTTP_404_NOT_FOUND)
+        return Response(data={"error": PND}, status = status.HTTP_404_NOT_FOUND)
 
     serializer = CommentCreateSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)

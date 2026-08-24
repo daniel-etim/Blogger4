@@ -1,6 +1,7 @@
 from django.utils.text import slugify
 
 from rest_framework import serializers
+from rest_framework.relations import StringRelatedField
 
 from blog.models.blog import Post
 
@@ -21,6 +22,19 @@ class PostListSerializer(serializers.ModelSerializer):
         fields = ["title", "created_at", "author", "id"]
 
         read_only_fields = ["title", "created_at", "author", "id"]
+
+
+class PostReadSerializer(serializers.ModelSerializer):
+    """ModelSerializer for post read"""
+
+    author = StringRelatedField()
+
+    class Meta:
+        model = Post
+        fields = ["title", "content", "created_at", "author"]
+
+        read_only_fields = ["title", "content", "created_at", "author"]
+
 
 class PostCreateSerializer(serializers.ModelSerializer):
     """ModelSerializer for post create"""

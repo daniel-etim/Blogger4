@@ -4,9 +4,9 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
 
-from blog.serializers.blog import PostListSerializer, PostCreateSerializer, PostUpdateSerializer
+from blog.serializers.blog import PostListSerializer, PostReadSerializer, PostCreateSerializer, PostUpdateSerializer
 from blog.models.blog import Post
 from blogger.permissions import check_post_owner
 
@@ -48,6 +48,18 @@ def post_list(request: Request):
     }
 
     return Response(data=response_data, status=status.HTTP_200_OK)
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def post_read(request: Request, pk: int):
+    try:
+        post = Post.objects.get(pk=pk)
+    except Post.DoesNotExist:
+        return Response(data={"error": "Post Not Found"}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = PostReadSerializer(post)
+
+    return Response(data={"post": serializer.data}, status=status.HTTP_200_OK)
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])

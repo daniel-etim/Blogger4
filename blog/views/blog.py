@@ -6,8 +6,12 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
 
-from blog.serializers.blog import PostListSerializer, PostReadSerializer, PostCreateSerializer, PostUpdateSerializer
 from blog.models.blog import Post
+from comment.models.comment import Comment
+
+from blog.serializers.blog import PostListSerializer, PostReadSerializer, PostCreateSerializer, PostUpdateSerializer
+from comment.serializers.comment import CommentCreateSerializer
+
 from blogger.permissions import check_post_owner
 
 
@@ -56,12 +60,14 @@ def post_list(request: Request):
 def post_read(request: Request, pk: int):
     try:
         post = Post.objects.get(pk=pk)
+        comments = Comment.objects.filter(post_id=pk)
     except Post.DoesNotExist:
         return Response(data={"error": PND}, status=status.HTTP_404_NOT_FOUND)
 
     serializer = PostReadSerializer(post)
+    comment_serializer = CommentCreateSerializer(comments, many=True)
 
-    return Response(data={"post": serializer.data}, status=status.HTTP_200_OK)
+    return Response(data={"post": serializer.data, "comments": comment_serializer.data}, status=status.HTTP_200_OK)
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])

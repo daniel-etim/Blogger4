@@ -31,8 +31,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # This is for security-production safety
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-t__3ul@j9sk=s8_vxmor(l9jzcd&nkr8yrr2sxsl!na#v$peey')
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
-# ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
-ALLOWED_HOSTS = ['my-blogger-api-2oz9.onrender.com', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+# ALLOWED_HOSTS = ['my-blogger-api-2oz9.onrender.com', '127.0.0.1', 'localhost']
 
 # Application definition
 

@@ -22,7 +22,7 @@ def create_comment(request: Request, pk: int):
     try:
         post = Post.objects.get(pk=pk)
     except Post.DoesNotExist:
-        return Response(data={"error": PND}, status = status.HTTP_404_NOT_FOUND)
+        return Response(data={"error": CND}, status = status.HTTP_404_NOT_FOUND)
 
     serializer = CommentCreateSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)

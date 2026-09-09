@@ -17,7 +17,7 @@ CND = "Comment Not Found"
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def create_comment(request: Request, pk: int):
-    """..."""
+    """Handles comment creation and return 201 upon success"""
 
     try:
         post = Post.objects.get(pk=pk)
@@ -30,6 +30,7 @@ def create_comment(request: Request, pk: int):
     serializer = serializer.save(author=request.user, post=post)
 
     serializer_data = {
+        "message": "Commented successfully",
         "post": str(serializer.post),
         "comment": serializer.body,
         "created_at": serializer.created_at,
@@ -42,6 +43,7 @@ def create_comment(request: Request, pk: int):
 @api_view(["DELETE"])
 @permission_classes([IsAuthenticated])
 def delete_comment(request: Request, pk: int):
+    """Deletes comment and return 201 upon success"""
     try:
         comment = Comment.objects.get(pk=pk)
     except Comment.DoesNotExist:

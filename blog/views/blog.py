@@ -58,6 +58,7 @@ def post_list(request: Request):
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def post_read(request: Request, pk: int):
+    """Get post detail by id(pk)"""
     try:
         post = Post.objects.get(pk=pk)
         comments = Comment.objects.filter(post_id=pk)
